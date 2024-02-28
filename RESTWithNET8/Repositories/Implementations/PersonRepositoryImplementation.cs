@@ -3,13 +3,13 @@ using RESTWithNET8.Models;
 using RESTWithNET8.Models.Context;
 using System;
 
-namespace RESTWithNET8.Services.Implementations
+namespace RESTWithNET8.Repositories.Implementations
 {
-    public class PersonServiceImplementation : IPersonService
+    public class PersonRepositoryImplementation : IPersonRepository
     {
         private MySQLContext _context;
 
-        public PersonServiceImplementation(MySQLContext context) 
+        public PersonRepositoryImplementation(MySQLContext context) 
         {
             _context = context;
         }
@@ -44,7 +44,7 @@ namespace RESTWithNET8.Services.Implementations
         {
             if (!Exists(person.Id))
             {
-                return new Person();
+                return null;
             }
 
             var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(person.Id));
@@ -83,7 +83,7 @@ namespace RESTWithNET8.Services.Implementations
             }
         }
 
-        private bool Exists(long id)
+        public bool Exists(long id)
         {
             return _context.Persons.Any(p => p.Id.Equals(id));
         }

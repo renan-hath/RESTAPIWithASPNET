@@ -1,8 +1,9 @@
-﻿using RESTWithNET8.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using RESTWithNET8.Models;
 
-namespace RESTWithNET8.Services
+namespace RESTWithNET8.Repositories
 {
-    public interface IPersonService
+    public interface IPersonRepository
     {
         Person Create(Person person);
 
@@ -13,5 +14,7 @@ namespace RESTWithNET8.Services
         Person Update(Person person);
 
         void Delete(long id);
+
+        bool Exists(long id);
     }
 }

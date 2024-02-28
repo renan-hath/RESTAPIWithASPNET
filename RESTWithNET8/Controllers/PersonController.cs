@@ -1,7 +1,7 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using RESTWithNET8.Models;
-using RESTWithNET8.Services;
+using RESTWithNET8.Businesses;
 
 namespace RESTWithNET8.Controllers
 {
@@ -12,26 +12,26 @@ namespace RESTWithNET8.Controllers
     {
         private readonly ILogger<PersonController> _logger;
 
-        // Declaration of the service used
-        private IPersonService _personService;
+        // Declaration of the business used
+        private IPersonBusiness _personBusiness;
 
-        // Injection of an instance of IPersonService when creating an instance of PersonController
-        public PersonController(ILogger<PersonController> logger, IPersonService personService)
+        // Injection of an instance of IPersonBusiness when creating an instance of PersonController
+        public PersonController(ILogger<PersonController> logger, IPersonBusiness personBusiness)
         {
             _logger = logger;
-            _personService = personService;
+            _personBusiness = personBusiness;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_personService.FindAll());
+            return Ok(_personBusiness.FindAll());
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var person = _personService.FindByID(id);
+            var person = _personBusiness.FindByID(id);
 
             if (person == null)
             {
@@ -53,7 +53,7 @@ namespace RESTWithNET8.Controllers
             }
             else
             {
-                return Ok(_personService.Create(person));
+                return Ok(_personBusiness.Create(person));
             }
         }
 
@@ -66,14 +66,14 @@ namespace RESTWithNET8.Controllers
             }
             else
             {
-                return Ok(_personService.Update(person));
+                return Ok(_personBusiness.Update(person));
             }
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            var person = _personService.FindByID(id);
+            var person = _personBusiness.FindByID(id);
 
             if (person == null)
             {
@@ -81,7 +81,7 @@ namespace RESTWithNET8.Controllers
             }
             else
             {
-                _personService.Delete(id);
+                _personBusiness.Delete(id);
                 return NoContent();
             }
         }
