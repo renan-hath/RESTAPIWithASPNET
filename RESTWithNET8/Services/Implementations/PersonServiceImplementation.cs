@@ -1,67 +1,91 @@
-﻿using RESTWithNET8.Models;
+﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using RESTWithNET8.Models;
+using RESTWithNET8.Models.Context;
+using System;
 
 namespace RESTWithNET8.Services.Implementations
 {
     public class PersonServiceImplementation : IPersonService
     {
-        // Counter responsible for generating a fake ID since we are not accessing any database
-        private volatile int count;
+        private MySQLContext _context;
+
+        public PersonServiceImplementation(MySQLContext context) 
+        {
+            _context = context;
+        }
+
+        public List<Person> FindAll()
+        {
+
+            return _context.Persons.ToList();
+        }
+
+        public Person FindByID(long id)
+        {
+            return _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
+        }
 
         public Person Create(Person person)
         {
+            try
+            {
+                _context.Add(person);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return person;
+        }
+
+        public Person Update(Person person)
+        {
+            if (!Exists(person.Id))
+            {
+                return new Person();
+            }
+
+            var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(person.Id));
+
+            if (result != null)
+            {
+                try
+                {
+                    _context.Entry(result).CurrentValues.SetValues(person);
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+
             return person;
         }
 
         public void Delete(long id)
         {
-            //throw new NotImplementedException();
-        }
+            var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
 
-        public List<Person> FindAll()
-        {
-            List<Person> persons = new List<Person>();
-
-            for (int i = 0; i < 8; i++)
+            if (result != null)
             {
-                Person person = MockPerson(i);
-                persons.Add(person);
+                try
+                {
+                    _context.Persons.Remove(result);
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
             }
-
-            return persons;
         }
 
-        public Person FindByID(long id)
+        private bool Exists(long id)
         {
-            return new Person
-            {
-                Id = 1,
-                FirstName = "Leandro",
-                LastName = "Costa",
-                Address = "Uberlândia - MG",
-                Gender = "Male"
-            };
-        }
-
-        public Person Update(Person person)
-        {
-            return person;
-        }
-
-        private Person MockPerson(int i)
-        {
-            return new Person
-            {
-                Id = GetAndIncrement(),
-                FirstName = "Person Name " + i,
-                LastName = "Person LastName " + i,
-                Address = "An address " + i,
-                Gender = "Male"
-            };
-        }
-
-        private long GetAndIncrement()
-        {
-            return Interlocked.Increment(ref count);
+            return _context.Persons.Any(p => p.Id.Equals(id));
         }
     }
 }
