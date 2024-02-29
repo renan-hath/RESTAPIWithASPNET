@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RESTWithNET8.Models;
 using RESTWithNET8.Businesses;
+using RESTWithNET8.Data.ValueObjects;
 
 namespace RESTWithNET8.Controllers
 {
@@ -45,7 +46,7 @@ namespace RESTWithNET8.Controllers
 
         // [FromBody] consumes the JSON object sent in the request body
         [HttpPost]
-        public IActionResult Post([FromBody] Person person)
+        public IActionResult Post([FromBody] PersonVO person)
         {
             if (person == null)
             {
@@ -58,7 +59,7 @@ namespace RESTWithNET8.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Person person)
+        public IActionResult Put([FromBody] PersonVO person)
         {
             if (person == null)
             {

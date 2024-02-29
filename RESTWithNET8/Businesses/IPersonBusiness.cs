@@ -1,16 +1,17 @@
-﻿using RESTWithNET8.Models;
+﻿using RESTWithNET8.Data.ValueObjects;
+using RESTWithNET8.Models;
 
 namespace RESTWithNET8.Businesses
 {
     public interface IPersonBusiness
     {
-        Person Create(Person person);
+        PersonVO Create(PersonVO person);
 
-        Person FindByID(long id);
+        PersonVO FindByID(long id);
 
-        List<Person> FindAll();
-        
-        Person Update(Person person);
+        List<PersonVO> FindAll();
+
+        PersonVO Update(PersonVO person);
 
         void Delete(long id);
     }

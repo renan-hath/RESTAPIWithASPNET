@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using RESTWithNET8.Businesses;
+using RESTWithNET8.Data.ValueObjects;
 using RESTWithNET8.Models;
 
 namespace RESTWithNET8.Controllers
@@ -45,7 +46,7 @@ namespace RESTWithNET8.Controllers
 
         // [FromBody] consumes the JSON object sent in the request body
         [HttpPost]
-        public IActionResult Post([FromBody] Book book)
+        public IActionResult Post([FromBody] BookVO book)
         {
             if (book == null)
             {
@@ -58,7 +59,7 @@ namespace RESTWithNET8.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Book book)
+        public IActionResult Put([FromBody] BookVO book)
         {
             if (book == null)
             {
