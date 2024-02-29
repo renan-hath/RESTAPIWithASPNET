@@ -4,6 +4,9 @@ using RESTWithNET8.Businesses;
 using RESTWithNET8.Businesses.Implementations;
 using RESTWithNET8.Repositories;
 using RESTWithNET8.Repositories.Implementations;
+using EvolveDb;
+using MySqlConnector;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,11 @@ builder.Services.AddControllers();
 
 var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
 builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 36))));
+
+if (builder.Environment.IsDevelopment())
+{
+    MigrateDatabase(connection);
+}
 
 // API versioning
 builder.Services.AddApiVersioning();
@@ -32,3 +40,24 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+void MigrateDatabase(string connection)
+{
+    try
+    {
+        var evolveConnection = new MySqlConnection(connection);
+
+        var evolve = new Evolve(evolveConnection, Log.Information)
+        {
+            Locations = new List<string> { "Database/Migrations", "Database/Datasets" },
+            IsEraseDisabled = true,
+        };
+
+        evolve.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Log.Error("Database migration failed", ex);
+        throw;
+    }
+}
