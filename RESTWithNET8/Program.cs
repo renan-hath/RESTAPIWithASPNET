@@ -3,10 +3,10 @@ using RESTWithNET8.Models.Context;
 using RESTWithNET8.Businesses;
 using RESTWithNET8.Businesses.Implementations;
 using RESTWithNET8.Repositories;
-using RESTWithNET8.Repositories.Implementations;
 using EvolveDb;
 using MySqlConnector;
 using Serilog;
+using RESTWithNET8.Repositories.Generic.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +27,8 @@ builder.Services.AddApiVersioning();
 
 // Dependency injection
 builder.Services.AddScoped<IPersonBusiness, PersonBusinessImplementation>();
-builder.Services.AddScoped<IPersonRepository, PersonRepositoryImplementation>();
 builder.Services.AddScoped<IBookBusiness, BookBusinessImplementation>();
-builder.Services.AddScoped<IBookRepository, BookRepositoryImplementation>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 
 var app = builder.Build();
 

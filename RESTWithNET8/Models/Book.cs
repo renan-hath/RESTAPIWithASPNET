@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using RESTWithNET8.Models.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RESTWithNET8.Models
 {
     [Table("books")]
-    public class Book
+    public class Book : BaseEntity
     {
-        [Column("id")]
-        public long Id { get; set; }
-
         [Column("title")]
         public string Title { get; set; } = string.Empty;
 
