@@ -23,6 +23,12 @@ var appDescription = $"RESTful API developed in course '{appName}'";
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
+builder.Services.AddCors(options => options.AddDefaultPolicy(
+                         builder => 
+                         { 
+                             builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); 
+                         }));
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -77,6 +83,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseSwagger();
 app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", urlName); });
