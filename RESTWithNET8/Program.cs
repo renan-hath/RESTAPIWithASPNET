@@ -10,12 +10,37 @@ using RESTWithNET8.Repositories.Generic.Implementation;
 using System.Net.Http.Headers;
 using RESTWithNET8.Hypermedia.Filters;
 using RESTWithNET8.Hypermedia.Enricher;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
+var appName = "REST API - From 0 to Azure with ASP.NET 8 and Docker";
+var appVersion = "v1";
+var urlName = $"{appName} - {appVersion}";
+var appDescription = $"RESTful API developed in course '{appName}'";
 
 // Add services to the container.
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1",
+        new OpenApiInfo
+        {
+            Title = appName,
+            Version = appVersion,
+            Description = appDescription,
+            Contact = new OpenApiContact
+            {
+                Name = "Renan Hatherly",
+                Url = new Uri("https://github.com/renan-hath")
+            }
+        });
+});
 
 var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
 builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 36))));
@@ -52,6 +77,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
+
+app.UseSwagger();
+app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", urlName); });
+var option = new RewriteOptions();
+option.AddRedirect("^$", "swagger");
+app.UseRewriter(option);
 
 app.UseAuthorization();
 
