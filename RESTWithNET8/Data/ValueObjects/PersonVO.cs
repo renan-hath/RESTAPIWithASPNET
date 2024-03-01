@@ -1,10 +1,12 @@
-﻿using RESTWithNET8.Models.Base;
+﻿using RESTWithNET8.Hypermedia;
+using RESTWithNET8.Hypermedia.Abstract;
+using RESTWithNET8.Models.Base;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace RESTWithNET8.Data.ValueObjects
 {
-    public class PersonVO
+    public class PersonVO : ISupportsHyperMedia
     {
         [JsonPropertyName("id")]
         public long Id { get; set; }
@@ -20,5 +22,7 @@ namespace RESTWithNET8.Data.ValueObjects
 
         [JsonPropertyName("gender")]
         public string Gender {  get; set; } = string.Empty;
+
+        public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();
     }
 }

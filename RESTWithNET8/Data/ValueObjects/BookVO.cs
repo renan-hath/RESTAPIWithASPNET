@@ -1,8 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using RESTWithNET8.Hypermedia;
+using RESTWithNET8.Hypermedia.Abstract;
+using System.Text.Json.Serialization;
 
 namespace RESTWithNET8.Data.ValueObjects
 {
-    public class BookVO
+    public class BookVO : ISupportsHyperMedia
     {
         [JsonPropertyName("id")]
         public long Id { get; set; }
@@ -18,5 +20,7 @@ namespace RESTWithNET8.Data.ValueObjects
 
         [JsonPropertyName("launchDate")]
         public DateTime LaunchDate { get; set; }
+
+        public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();
     }
 }

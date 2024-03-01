@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RESTWithNET8.Models;
 using RESTWithNET8.Businesses;
 using RESTWithNET8.Data.ValueObjects;
+using RESTWithNET8.Hypermedia.Filters;
 
 namespace RESTWithNET8.Controllers
 {
@@ -24,12 +25,14 @@ namespace RESTWithNET8.Controllers
         }
 
         [HttpGet]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
         {
             return Ok(_personBusiness.FindAll());
         }
 
         [HttpGet("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(long id)
         {
             var person = _personBusiness.FindByID(id);
@@ -46,6 +49,7 @@ namespace RESTWithNET8.Controllers
 
         // [FromBody] consumes the JSON object sent in the request body
         [HttpPost]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody] PersonVO person)
         {
             if (person == null)
@@ -59,6 +63,7 @@ namespace RESTWithNET8.Controllers
         }
 
         [HttpPut]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put([FromBody] PersonVO person)
         {
             if (person == null)
