@@ -1,6 +1,5 @@
 ﻿using RESTWithNET8.Models;
 using RESTWithNET8.Models.Context;
-using RESTWithNET8.Repositories.Generic.Implementation;
 
 namespace RESTWithNET8.Repositories.Implementation
 {
@@ -33,6 +32,31 @@ namespace RESTWithNET8.Repositories.Implementation
             }
 
             return user;
+        }
+
+        public List<Person> FindByName(string name, string lastName)
+        {
+            if (!string.IsNullOrWhiteSpace(name) &&
+                !string.IsNullOrWhiteSpace(lastName))
+            {
+                return _context.Persons.Where(p =>
+                    p.FirstName.Contains(name) &&
+                    p.LastName.Contains(lastName)).ToList();
+            }
+            else if (!string.IsNullOrWhiteSpace(name) &&
+                     string.IsNullOrWhiteSpace(lastName))
+            {
+                return _context.Persons.Where(p =>
+                    p.FirstName.Contains(name)).ToList();
+            }
+            else if (string.IsNullOrWhiteSpace(name) &&
+                     !string.IsNullOrWhiteSpace(lastName))
+            {
+                return _context.Persons.Where(p =>
+                    p.LastName.Contains(lastName)).ToList();
+            }
+
+            return null;
         }
     }
 }

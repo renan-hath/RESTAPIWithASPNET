@@ -26,15 +26,16 @@ namespace RESTWithNET8.Controllers
             _personBusiness = personBusiness;
         }
 
-        [HttpGet]
+        [HttpGet("{sortDirection}/{pageSize}/{page}")]
         [ProducesResponseType((200), Type = typeof(List<PersonVO>))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] string? name, string sortDirection,
+                                 int pageSize, int page)
         {
-            return Ok(_personBusiness.FindAll());
+            return Ok(_personBusiness.FindWithPagedSearch(name, sortDirection, pageSize, page));
         }
 
         [HttpGet("{id}")]
@@ -46,6 +47,26 @@ namespace RESTWithNET8.Controllers
         public IActionResult Get(long id)
         {
             var person = _personBusiness.FindByID(id);
+
+            if (person == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(person);
+            }
+        }
+
+        [HttpGet("findbyname")]
+        [ProducesResponseType((200), Type = typeof(PersonVO))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
+        public IActionResult Get([FromQuery] string? name, [FromQuery] string? lastName)
+        {
+            var person = _personBusiness.FindByName(name, lastName);
 
             if (person == null)
             {

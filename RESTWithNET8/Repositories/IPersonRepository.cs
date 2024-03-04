@@ -7,5 +7,7 @@ namespace RESTWithNET8.Repositories
     public interface IPersonRepository : IRepository<Person>
     {
         Person Disable(long id);
+
+        List<Person> FindByName(string name, string lastName);
     }
 }

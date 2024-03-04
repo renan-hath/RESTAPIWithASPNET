@@ -4,7 +4,7 @@ using RESTWithNET8.Models.Base;
 using RESTWithNET8.Models.Context;
 using System;
 
-namespace RESTWithNET8.Repositories.Generic.Implementation
+namespace RESTWithNET8.Repositories.Implementation
 {
     public class GenericRepository<T> : IRepository<T> where T : BaseEntity
     {
@@ -59,7 +59,8 @@ namespace RESTWithNET8.Repositories.Generic.Implementation
                 {
                     throw;
                 }
-            } else 
+            }
+            else
             {
                 return null;
             }
@@ -86,6 +87,30 @@ namespace RESTWithNET8.Repositories.Generic.Implementation
         public bool Exists(long id)
         {
             return dataset.Any(p => p.Id.Equals(id));
+        }
+
+        public List<T> FindWithPagedSearch(string query)
+        {
+            return dataset.FromSqlRaw<T>(query).ToList();
+        }
+
+        public int GetCount(string query)
+        {
+            var result = "";
+
+            using (var connection = _context.Database.GetDbConnection())
+            {
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = query;
+
+                    result = command.ExecuteScalar().ToString();
+                }
+            }
+
+            return int.Parse(result);
         }
     }
 }

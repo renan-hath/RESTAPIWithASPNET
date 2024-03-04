@@ -6,7 +6,6 @@ using RESTWithNET8.Repositories;
 using EvolveDb;
 using MySqlConnector;
 using Serilog;
-using RESTWithNET8.Repositories.Generic.Implementation;
 using System.Net.Http.Headers;
 using RESTWithNET8.Hypermedia.Filters;
 using RESTWithNET8.Hypermedia.Enricher;
