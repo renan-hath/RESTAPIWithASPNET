@@ -13,9 +13,9 @@ namespace RESTWithNET8.Businesses.Implementations
 
         private TokenConfiguration _configuration;
 
-        private IUserRepository _repository;
-
         private readonly ITokenService _tokenService;
+
+        private IUserRepository _repository;
 
         public LoginBusinessImplementation(TokenConfiguration configuration, IUserRepository repository, ITokenService tokenService)
         {
@@ -24,9 +24,9 @@ namespace RESTWithNET8.Businesses.Implementations
             _tokenService = tokenService;
         }
 
-        public TokenVO ValidateCredentials(UserVO user)
+        public TokenVO ValidateCredentials(UserVO userVO)
         {
-            var validatedUser = _repository.ValidateCredentials(user);
+            var validatedUser = _repository.ValidateCredentials(userVO);
 
             if (validatedUser == null)
             {
@@ -37,7 +37,7 @@ namespace RESTWithNET8.Businesses.Implementations
                 var claims = new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-                    new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                    new Claim(JwtRegisteredClaimNames.UniqueName, userVO.UserName)
                 };
 
                 var accessToken = _tokenService.GenerateAccessToken(claims);
@@ -59,6 +59,48 @@ namespace RESTWithNET8.Businesses.Implementations
                     refreshToken
                     );
             }
+        }
+
+        public TokenVO ValidateCredentials(TokenVO tokenVO)
+        {
+            var accessToken = tokenVO.AccessToken;
+            var refreshToken = tokenVO.RefreshToken;
+
+            var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
+            var username = principal.Identity.Name;
+            var validatedUser = _repository.ValidateCredentials(username);
+
+            if (validatedUser == null ||
+                validatedUser.RefreshToken != refreshToken ||
+                validatedUser.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return null;
+            }
+
+            accessToken = _tokenService.GenerateAccessToken(principal.Claims);
+            refreshToken = _tokenService.GenerateRefreshToken();
+
+            validatedUser.RefreshToken = refreshToken;
+
+            _repository.RefreshUserInfo(validatedUser);
+
+            DateTime createDate = DateTime.Now;
+            DateTime expirationDate = createDate.AddMinutes(_configuration.Minutes);
+
+            return new TokenVO(
+                true,
+                createDate.ToString(DATE_FORMAT),
+                expirationDate.ToString(DATE_FORMAT),
+                accessToken,
+                refreshToken
+                );
+
+            throw new NotImplementedException();
+        }
+
+        public bool RevokeToken(string username)
+        {
+            return _repository.RevokeToken(username);
         }
     }
 }

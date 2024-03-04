@@ -24,6 +24,29 @@ namespace RESTWithNET8.Repositories.Implementation
             (contextUser.UserName == user.UserName) && (contextUser.Password == password));
         }
 
+        public User ValidateCredentials(string username)
+        {
+            return _context.Users.SingleOrDefault(contextUser =>
+            (contextUser.UserName == username));
+        }
+
+        public bool RevokeToken(string username)
+        {
+            var user = _context.Users.SingleOrDefault(contextUser =>
+            (contextUser.UserName == username));
+
+            if (user is  null) 
+            {
+                return false;
+            }
+
+            user.RefreshToken = null;
+
+            _context.SaveChanges();
+
+            return true;
+        }
+
         private object ComputeHash(string input, HashAlgorithm algorithm)
         {
             byte[] inputBytes = Encoding.UTF8.GetBytes(input);
