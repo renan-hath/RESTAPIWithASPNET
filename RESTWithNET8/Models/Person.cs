@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RESTWithNET8.Models
 {
-    [Table("person")]
+    [Table("persons")]
     public class Person : BaseEntity
     {
 

@@ -4,11 +4,13 @@ using RESTWithNET8.Models;
 using RESTWithNET8.Businesses;
 using RESTWithNET8.Data.ValueObjects;
 using RESTWithNET8.Hypermedia.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RESTWithNET8.Controllers
 {
     [ApiVersion("1")]
     [ApiController]
+    [Authorize("Bearer")]
     [Route("api/[controller]/v{version:apiVersion}")]
     public class PersonController : ControllerBase
     {

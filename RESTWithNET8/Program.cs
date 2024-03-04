@@ -12,8 +12,19 @@ using RESTWithNET8.Hypermedia.Filters;
 using RESTWithNET8.Hypermedia.Enricher;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Rewrite;
+using RESTWithNET8.Services;
+using RESTWithNET8.Services.Implementation;
+using RESTWithNET8.Repositories.Implementation;
+using RESTWithNET8.Configurations;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var appName = "REST API - From 0 to Azure with ASP.NET 8 and Docker";
 var appVersion = "v1";
 var urlName = $"{appName} - {appVersion}";
@@ -22,6 +33,41 @@ var appDescription = $"RESTful API developed in course '{appName}'";
 // Add services to the container.
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+var tokenConfigurations = new TokenConfiguration();
+new ConfigureFromConfigurationOptions<TokenConfiguration>(
+    builder.Configuration.GetSection("TokenConfigurations")
+    )
+    .Configure(tokenConfigurations);
+
+builder.Services.AddSingleton(tokenConfigurations);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = tokenConfigurations.Issuer,
+        ValidAudience = tokenConfigurations.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfigurations.Secret))
+    };
+});
+
+builder.Services.AddAuthorization(auth =>
+{
+    auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser().Build());
+});
+
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(
                          builder => 
@@ -76,7 +122,10 @@ builder.Services.AddApiVersioning();
 // Dependency injection
 builder.Services.AddScoped<IPersonBusiness, PersonBusinessImplementation>();
 builder.Services.AddScoped<IBookBusiness, BookBusinessImplementation>();
+builder.Services.AddScoped<ILoginBusiness, LoginBusinessImplementation>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddTransient<ITokenService, TokenService>();
 
 var app = builder.Build();
 
