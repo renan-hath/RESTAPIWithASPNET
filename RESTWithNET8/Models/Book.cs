@@ -7,10 +7,10 @@ namespace RESTWithNET8.Models
     public class Book : BaseEntity
     {
         [Column("title")]
-        public string Title { get; set; } = string.Empty;
+        public string Title { get; set; }
 
         [Column("author")]
-        public string Author { get; set; } = string.Empty;
+        public string Author { get; set; }
 
         [Column("price")]
         public double Price { get; set; }

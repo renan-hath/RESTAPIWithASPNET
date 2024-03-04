@@ -13,6 +13,8 @@ namespace RESTWithNET8.Businesses
 
         PersonVO Update(PersonVO person);
 
+        PersonVO Disable(long id);
+
         void Delete(long id);
     }
 }

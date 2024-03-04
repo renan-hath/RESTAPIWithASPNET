@@ -10,10 +10,10 @@ namespace RESTWithNET8.Businesses.Implementations
 {
     public class PersonBusinessImplementation : IPersonBusiness
     {
-        private readonly IRepository<Person> _repository;
+        private readonly IPersonRepository _repository;
         private readonly PersonConverter _converter;
 
-        public PersonBusinessImplementation(IRepository<Person> repository) 
+        public PersonBusinessImplementation(IPersonRepository repository) 
         {
             _repository = repository;
             _converter = new PersonConverter();
@@ -40,6 +40,13 @@ namespace RESTWithNET8.Businesses.Implementations
         public PersonVO Update(PersonVO person)
         {
             var personEntity = _repository.Update(_converter.Parse(person));
+
+            return _converter.Parse(personEntity);
+        }
+
+        public PersonVO Disable(long id)
+        {
+            var personEntity = _repository.Disable(id);
 
             return _converter.Parse(personEntity);
         }

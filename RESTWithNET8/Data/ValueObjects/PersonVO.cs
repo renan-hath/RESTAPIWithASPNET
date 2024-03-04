@@ -12,16 +12,19 @@ namespace RESTWithNET8.Data.ValueObjects
         public long Id { get; set; }
 
         [JsonPropertyName("name")]
-        public string FirstName { get; set; } = string.Empty;
+        public string FirstName { get; set; }
 
         [JsonPropertyName("lastName")]
-        public string LastName { get; set; } = string.Empty;
+        public string LastName { get; set; }
 
         [JsonPropertyName("address")]
-        public string Address { get; set; } = string.Empty;
+        public string Address { get; set; }
 
         [JsonPropertyName("gender")]
-        public string Gender {  get; set; } = string.Empty;
+        public string Gender {  get; set; }
+
+        [JsonPropertyName("enabled")]
+        public bool Enabled { get; set; }
 
         public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();
     }

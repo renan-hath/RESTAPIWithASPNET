@@ -10,10 +10,10 @@ namespace RESTWithNET8.Data.ValueObjects
         public long Id { get; set; }
 
         [JsonPropertyName("title")]
-        public string Title { get; set; } = string.Empty;
+        public string Title { get; set; }
 
         [JsonPropertyName("author")]
-        public string Author { get; set; } = string.Empty;
+        public string Author { get; set; }
 
         [JsonPropertyName("price")]
         public double Price { get; set; }
