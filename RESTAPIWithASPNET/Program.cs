@@ -97,10 +97,10 @@ builder.Services.AddSwaggerGen(c =>
 var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
 builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 36))));
 
-if (builder.Environment.IsDevelopment())
-{
-    MigrateDatabase(connection);
-}
+//if (builder.Environment.IsDevelopment())
+//{
+//    MigrateDatabase(connection);
+//}
 
 builder.Services.AddMvc(options =>
 {

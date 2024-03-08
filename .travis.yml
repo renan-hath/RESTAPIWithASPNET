@@ -1,0 +1,26 @@
+sudo: required
+dist: ubuntu
+language: csharp
+mono: none
+before_install:
+  # Add Microsoft package source
+  - wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  - sudo dpkg -i packages-microsoft-prod.deb
+  - rm packages-microsoft-prod.deb
+dotnet: 8.0
+services: docker
+script:
+  - docker-compose build
+before_deploy:
+  - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+deploy:
+  provider: script
+  script:
+    docker tag rest-api-with-aspnet:latest $DOCKER_USERNAME/rest-api-with-aspnet:$TRAVIS_JOB_ID;
+    docker tag rest-api-with-aspnet-db:latest $DOCKER_USERNAME/rest-api-with-aspnet-db:$TRAVIS_JOB_ID;
+    docker push $DOCKER_USERNAME/rest-api-with-aspnet:$TRAVIS_JOB_ID;
+    docker push $DOCKER_USERNAME/rest-api-with-aspnet-db:$TRAVIS_JOB_ID;
+  on:
+    branch: main
+notifications:
+  email: false
