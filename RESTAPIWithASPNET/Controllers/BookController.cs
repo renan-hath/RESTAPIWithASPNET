@@ -26,19 +26,20 @@ namespace RESTWithNET8.Controllers
             _bookBusiness = bookBusiness;
         }
 
-        [HttpGet]
-        [ProducesResponseType((200), Type = typeof(List<PersonVO>))]
+        [HttpGet("{sortDirection}/{pageSize}/{page}")]
+        [ProducesResponseType((200), Type = typeof(List<BookVO>))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] string title, string sortDirection,
+                                             int pageSize, int page)
         {
-            return Ok(_bookBusiness.FindAll());
+            return Ok(_bookBusiness.findWithPagedSearch(title, sortDirection, pageSize, page));
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType((200), Type = typeof(PersonVO))]
+        [ProducesResponseType((200), Type = typeof(BookVO))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
@@ -59,7 +60,7 @@ namespace RESTWithNET8.Controllers
 
         // [FromBody] consumes the JSON object sent in the request body
         [HttpPost]
-        [ProducesResponseType((200), Type = typeof(PersonVO))]
+        [ProducesResponseType((200), Type = typeof(BookVO))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
@@ -76,7 +77,7 @@ namespace RESTWithNET8.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType((200), Type = typeof(PersonVO))]
+        [ProducesResponseType((200), Type = typeof(BookVO))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
