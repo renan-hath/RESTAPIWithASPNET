@@ -17,16 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="appsettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="appsettings_azuredatabase.json.backup" />
     <None Remove="RESTAPIWithASPNET.http" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="appsettings_azuredatabase.json.backup" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,10 +34,6 @@
 
   <ItemGroup>
     <Folder Include="Uploads\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>

@@ -35,7 +35,7 @@ namespace RESTWithNET8.Controllers
         public IActionResult Get([FromQuery] string title, string sortDirection,
                                              int pageSize, int page)
         {
-            return Ok(_bookBusiness.findWithPagedSearch(title, sortDirection, pageSize, page));
+            return Ok(_bookBusiness.FindWithPagedSearch(title, sortDirection, pageSize, page));
         }
 
         [HttpGet("{id}")]

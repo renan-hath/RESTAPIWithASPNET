@@ -11,6 +11,8 @@ namespace RESTWithNET8.Businesses
 
         List<BookVO> FindAll();
 
+        PagedSearchVO<BookVO> FindWithPagedSearch(string title, string sortDirection, int pageSize, int page);
+
         BookVO Update(BookVO book);
 
         void Delete(long id);
