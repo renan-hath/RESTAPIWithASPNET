@@ -7,7 +7,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: RESTAPIWithASPNET/Database/Docker/Dockerfile
+      dockerfile: API/RESTAPIWithASPNET/Database/Docker/Dockerfile
     environment:
       TZ: America/Sao_Paulo
       MYSQL_ROOT_PASSWORD: docker
@@ -23,7 +23,7 @@ services:
     image: rest-api-with-aspnet
     build:
       context: .
-      dockerfile: RESTAPIWithASPNET/Dockerfile
+      dockerfile: API/RESTAPIWithASPNET/Dockerfile
     environment:
       TZ: America/Sao_Paulo
       ASPNETCORE_ENVIRONMENT: Production
