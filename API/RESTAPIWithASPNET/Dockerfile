@@ -9,8 +9,8 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["RESTAPIWithASPNET/RESTAPIWithASPNET.csproj", "RESTAPIWithASPNET/"]
-RUN dotnet restore "./RESTAPIWithASPNET/RESTAPIWithASPNET.csproj"
+COPY ["API/RESTAPIWithASPNET/RESTAPIWithASPNET.csproj", "RESTAPIWithASPNET/"]
+RUN dotnet restore "./API/RESTAPIWithASPNET/RESTAPIWithASPNET.csproj"
 COPY . .
 WORKDIR "/src/RESTAPIWithASPNET"
 RUN dotnet build "./RESTAPIWithASPNET.csproj" -c $BUILD_CONFIGURATION -o /app/build
