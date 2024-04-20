@@ -5,7 +5,7 @@ import * as constants from "../../constants";
 export default function Login() {
 	return (
 		<div className="login-container">
-			<section className="login-form">
+			<section className="form">
 				<img src={constants.LOGO_PATH} alt="ASPNETReactApp Logo" />
 				<form>
 					<h1>Access your account</h1>
