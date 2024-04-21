@@ -7,21 +7,43 @@ import * as constants from "../../constants";
 
 export default function Books() {
 	const [books, setBooks] = useState([]);
+	const [page, setPage] = useState(1);
+	const booksPerPage = 6;
+
 	const userName = localStorage.getItem("userName");
 	const accessToken = localStorage.getItem("accessToken");
+	const requestHeaders = {
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	};
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		api
-			.get(constants.API_ENDPOINT_BOOKS, {
-				headers: {
-					Authorization: `Bearer ${accessToken}`,
-				},
-			})
-			.then((response) => {
-				setBooks(response.data.list);
-			});
+		readBooks();
 	}, [accessToken]);
+
+	async function readBooks() {
+		const response = await api.get(
+			`${constants.API_ENDPOINT_BOOK}/
+             ${constants.API_ENDPOINT_BOOK_SORTDIRECTION.ASC}/
+             ${booksPerPage}/
+             ${page}`,
+			requestHeaders,
+		);
+		setBooks([...books, ...response.data.list]);
+		setPage(page + 1);
+	}
+
+	async function deleteBook(id) {
+		try {
+			await api.delete(`${constants.API_ENDPOINT_BOOK}/${id}`, requestHeaders);
+
+			setBooks(books.filter((book) => book.id !== id));
+		} catch (error) {
+			alert("Error while trying to delete this book. Please try again.");
+		}
+	}
 
 	async function editBook(id) {
 		try {
@@ -31,27 +53,9 @@ export default function Books() {
 		}
 	}
 
-	async function deleteBook(id) {
-		try {
-			await api.delete(`${constants.API_ENDPOINT_BOOK}/${id}`, {
-				headers: {
-					Authorization: `Bearer ${accessToken}`,
-				},
-			});
-
-			setBooks(books.filter((book) => book.id !== id));
-		} catch (error) {
-			alert("Error while trying to delete this book. Please try again.");
-		}
-	}
-
 	async function logout() {
 		try {
-			await api.get(constants.API_ENDPOINT_LOGOUT, {
-				headers: {
-					Authorization: `Bearer ${accessToken}`,
-				},
-			});
+			await api.get(constants.API_ENDPOINT_LOGOUT, requestHeaders);
 
 			localStorage.clear();
 			navigate(constants.CLIENT_ROUTE_LOGIN);
@@ -107,6 +111,9 @@ export default function Books() {
 					</li>
 				))}
 			</ul>
+			<button type="button" className="button" onClick={readBooks}>
+				Load more
+			</button>
 		</div>
 	);
 }

@@ -7,18 +7,21 @@ import * as constants from "../../constants";
 export default function Login() {
 	const [userName, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+	const requestBody = {
+		userName,
+		password,
+	};
+
 	const navigate = useNavigate();
 
 	async function login(e) {
 		e.preventDefault();
 
-		const data = {
-			userName,
-			password,
-		};
-
 		try {
-			const response = await api.post(constants.API_ENDPOINT_LOGIN, data);
+			const response = await api.post(
+				constants.API_ENDPOINT_LOGIN,
+				requestBody,
+			);
 
 			localStorage.setItem("userName", userName);
 			localStorage.setItem("accessToken", response.data.accessToken);

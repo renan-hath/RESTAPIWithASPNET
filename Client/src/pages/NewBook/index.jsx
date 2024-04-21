@@ -13,7 +13,7 @@ export default function NewBook() {
 	const [price, setPrice] = useState("");
 	const { bookId } = useParams();
 	const accessToken = localStorage.getItem("accessToken");
-	const authorization = {
+	const requestHeaders = {
 		headers: {
 			Authorization: `Bearer ${accessToken}`,
 		},
@@ -21,18 +21,34 @@ export default function NewBook() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (bookId === "0") {
-			return;
-		}
-
-		loadBook();
+		if (bookId === "0") return;
+		readBook();
 	}, [bookId]);
 
-	async function loadBook() {
+	async function createBook(e) {
+		e.preventDefault();
+
+		const requestBody = {
+			title,
+			author,
+			price,
+			launchDate,
+		};
+
+		try {
+			await api.post(constants.API_ENDPOINT_BOOK, requestBody, requestHeaders);
+		} catch (error) {
+			alert("Error while trying to create a new book. Please try again.");
+		}
+
+		navigate(constants.CLIENT_ROUTE_BOOKS);
+	}
+
+	async function readBook() {
 		try {
 			const response = await api.get(
 				`${constants.API_ENDPOINT_BOOK}/${bookId}`,
-				authorization,
+				requestHeaders,
 			);
 
 			setId(response.data.id);
@@ -46,29 +62,10 @@ export default function NewBook() {
 		}
 	}
 
-	async function createNewBook(e) {
-		e.preventDefault();
-
-		const data = {
-			title,
-			author,
-			price,
-			launchDate,
-		};
-
-		try {
-			await api.post(constants.API_ENDPOINT_BOOK, data, authorization);
-		} catch (error) {
-			alert("Error while trying to create a new book. Please try again.");
-		}
-
-		navigate(constants.CLIENT_ROUTE_BOOKS);
-	}
-
 	async function updateBook(e) {
 		e.preventDefault();
 
-		const data = {
+		const requestBody = {
 			id,
 			title,
 			author,
@@ -77,7 +74,7 @@ export default function NewBook() {
 		};
 
 		try {
-			await api.put(constants.API_ENDPOINT_BOOK, data, authorization);
+			await api.put(constants.API_ENDPOINT_BOOK, requestBody, requestHeaders);
 		} catch (error) {
 			alert("Error while trying to edit this book. Please try again.");
 		}
@@ -96,7 +93,7 @@ export default function NewBook() {
 					</Link>
 				</section>
 
-				<form onSubmit={bookId === "0" ? createNewBook : updateBook}>
+				<form onSubmit={bookId === "0" ? createBook : updateBook}>
 					<input
 						placeholder="Title"
 						value={title}
