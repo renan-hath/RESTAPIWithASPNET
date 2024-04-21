@@ -32,7 +32,7 @@ namespace RESTWithNET8.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Get([FromQuery] string title, string sortDirection,
+        public IActionResult Get([FromQuery] string? title, string sortDirection,
                                              int pageSize, int page)
         {
             return Ok(_bookBusiness.FindWithPagedSearch(title, sortDirection, pageSize, page));

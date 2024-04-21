@@ -1,12 +1,12 @@
-import React from "react";
-import api from "./../../services/api.jsx";
-import "./styles.css";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./styles.css";
+import api from "./../../services/api.jsx";
 import * as constants from "../../constants";
 
 export default function Login() {
-	const [userName, setUsername] = React.useState("");
-	const [password, setPassword] = React.useState("");
+	const [userName, setUsername] = useState("");
+	const [password, setPassword] = useState("");
 	const navigate = useNavigate();
 
 	async function login(e) {
@@ -24,7 +24,7 @@ export default function Login() {
 			localStorage.setItem("accessToken", response.data.accessToken);
 			localStorage.setItem("refreshToken", response.data.refreshToken);
 
-			navigate("/books");
+			navigate(constants.CLIENT_ROUTE_BOOKS);
 		} catch (error) {
 			alert("Login failed. Please try again.");
 		}
