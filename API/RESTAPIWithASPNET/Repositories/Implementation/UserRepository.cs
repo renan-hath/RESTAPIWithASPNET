@@ -35,7 +35,7 @@ namespace RESTWithNET8.Repositories.Implementation
             var user = _context.Users.SingleOrDefault(contextUser =>
             (contextUser.UserName == username));
 
-            if (user is  null) 
+            if (user is null) 
             {
                 return false;
             }

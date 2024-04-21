@@ -45,6 +45,21 @@ export default function Books() {
 		}
 	}
 
+	async function logout() {
+		try {
+			await api.get(constants.API_ENDPOINT_LOGOUT, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+
+			localStorage.clear();
+			navigate(constants.CLIENT_ROUTE_LOGIN);
+		} catch (error) {
+			alert("Logout failed. Please try again.");
+		}
+	}
+
 	return (
 		<div className="book-container">
 			<header>
@@ -55,7 +70,7 @@ export default function Books() {
 				<Link className="button" to={`${constants.CLIENT_ROUTE_NEWBOOK}/0`}>
 					Add new book
 				</Link>
-				<button type="button">
+				<button type="button" onClick={logout}>
 					<FiPower size={18} color="#251FC5" />
 				</button>
 			</header>
